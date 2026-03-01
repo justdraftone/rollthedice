@@ -34,6 +34,7 @@ export default function App() {
   const [result, setResult] = useState(null)
   const [counts, setCounts] = useState({})
   const [diceReady, setDiceReady] = useState(false)
+  const [muted, setMuted] = useState(false)
 
   const filledChoices = choices.filter(c => c.trim())
   const diceType = getDiceType(filledChoices.length)
@@ -41,6 +42,7 @@ export default function App() {
   const handleRoll = () => {
     setResult(null)
     setMode('rolling')
+    if (!muted) new Audio('/assets/dice-final.mp3').play().catch(() => {})
   }
 
   const handleRollComplete = (value) => {
@@ -48,6 +50,7 @@ export default function App() {
     const idx = ((value - 1) % filledChoices.length + filledChoices.length) % filledChoices.length
     setResult({ value, label: filledChoices[idx] })
     setMode('result')
+    if (!muted) new Audio('/assets/result-final.mp3').play().catch(() => {})
   }
 
   const handleIncrementCount = () => {
@@ -92,6 +95,10 @@ export default function App() {
           onEdit={() => { setResult(null); setMode('edit') }}
         />
       )}
+
+      <button className="mute-btn" onClick={() => setMuted(m => !m)} title={muted ? 'Unmute' : 'Mute'}>
+        {muted ? '🔇' : '🔊'}
+      </button>
 
       <a className="made-by" href="https://www.justdraftone.xyz/" target="_blank" rel="noreferrer">
         <span style={{ marginTop: '3px', fontFamily: 'Arial, Helvetica, sans-serif' }}>by</span>

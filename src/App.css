@@ -46,8 +46,8 @@
   transform: translateY(-50%);
   z-index: 10;
   width: 380px;
-  background: #111;
-  border: 2px solid #555;
+  background: #1a1a1a;
+  border: 2px solid #444;
   padding: 28px;
   display: flex;
   flex-direction: column;
@@ -68,8 +68,8 @@
 }
 
 .header-btn {
-  background: #1a1a1a;
-  border: 1px solid #555;
+  background: #222;
+  border: 1px solid #444;
   color: #ccc;
   font-size: 11px;
   font-family: 'Courier New', Courier, monospace;
@@ -86,12 +86,12 @@
 }
 
 .panel-header h2 {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 700;
   color: #fff;
   margin: 0;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
 }
 
 .dice-badge {
@@ -121,40 +121,40 @@
 }
 
 .choice-num {
-  font-size: 11px;
-  color: #888;
-  width: 16px;
+  font-size: 12px;
+  color: #666;
+  width: 18px;
   text-align: right;
   flex-shrink: 0;
 }
 
 .choice-input {
   flex: 1;
-  background: #0a0a0a;
-  border: 1px solid #555;
-  padding: 7px 10px;
+  background: #111;
+  border: 1px solid #444;
+  padding: 9px 12px;
   color: #fff;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
   font-family: 'Courier New', Courier, monospace;
   outline: none;
 }
 
 .choice-input:focus {
-  border-color: #fff;
+  border-color: #aaa;
 }
 
 .choice-input::placeholder {
-  color: #777;
+  color: #555;
   font-weight: 500;
 }
 
 .icon-btn {
-  width: 22px;
-  height: 22px;
-  background: #000;
-  border: 1px solid #555;
-  color: #888;
+  width: 26px;
+  height: 26px;
+  background: #111;
+  border: 1px solid #444;
+  color: #777;
   font-size: 13px;
   cursor: pointer;
   display: flex;

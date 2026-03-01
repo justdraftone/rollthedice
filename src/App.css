@@ -1,0 +1,633 @@
+/* ── Base ─────────────────────────────────────── */
+* {
+  font-family: 'Courier New', Courier, monospace;
+  image-rendering: pixelated;
+}
+
+.app {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+}
+
+/* ── Dice canvas ──────────────────────────────── */
+.dice-canvas-wrapper {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+/* Render at 50% size, scale up 2× with nearest-neighbour = pixelated look */
+.dice-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50vw;
+  height: 50vh;
+  transform: scale(2);
+  transform-origin: top left;
+}
+
+.dice-canvas canvas {
+  width: 100% !important;
+  height: 100% !important;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ── Choices panel ────────────────────────────── */
+.choices-panel {
+  position: absolute;
+  top: 50%;
+  left: 32px;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 380px;
+  background: #111;
+  border: 2px solid #555;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 90vh;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.panel-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-btn {
+  background: #1a1a1a;
+  border: 1px solid #555;
+  color: #ccc;
+  font-size: 11px;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 3px 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.header-btn:hover {
+  border-color: #aaa;
+  color: #fff;
+  background: #222;
+}
+
+.panel-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.dice-badge {
+  background: #fff;
+  color: #000;
+  padding: 2px 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.choices-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow-y: auto;
+  max-height: 60vh;
+  scrollbar-width: thin;
+  scrollbar-color: #444 #000;
+}
+
+.choice-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.choice-num {
+  font-size: 11px;
+  color: #888;
+  width: 16px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.choice-input {
+  flex: 1;
+  background: #0a0a0a;
+  border: 1px solid #555;
+  padding: 7px 10px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Courier New', Courier, monospace;
+  outline: none;
+}
+
+.choice-input:focus {
+  border-color: #fff;
+}
+
+.choice-input::placeholder {
+  color: #777;
+  font-weight: 500;
+}
+
+.icon-btn {
+  width: 22px;
+  height: 22px;
+  background: #000;
+  border: 1px solid #555;
+  color: #888;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.icon-btn:hover {
+  border-color: #aaa;
+  color: #fff;
+}
+
+.icon-btn.remove-btn:hover {
+  border-color: #ff4444;
+  color: #ff4444;
+  background: #1a0000;
+}
+
+.panel-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.add-btn {
+  background: #1a1a1a;
+  border: 1px solid #555;
+  color: #ccc;
+  font-size: 12px;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 8px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.add-btn:hover {
+  border-color: #aaa;
+  color: #fff;
+  background: #222;
+}
+
+.roll-btn {
+  background: #fff;
+  border: 2px solid #fff;
+  color: #000;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 11px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.roll-btn:hover:not(:disabled) {
+  background: #000;
+  color: #fff;
+}
+
+.roll-btn:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.roll-btn:disabled {
+  background: #222;
+  border-color: #333;
+  color: #444;
+  cursor: not-allowed;
+}
+
+/* ── Result overlay ───────────────────────────── */
+.result-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.result-card {
+  background: #0d0d0d;
+  border: 2px solid #fff;
+  padding: 36px 48px;
+  text-align: center;
+  pointer-events: all;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  min-width: 260px;
+}
+
+.result-face {
+  font-size: 12px;
+  color: #666;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.result-label {
+  font-size: 44px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  word-break: break-word;
+  max-width: 320px;
+}
+
+.result-count-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.count-label {
+  font-size: 12px;
+  color: #555;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.count-btn {
+  background: #000;
+  border: 1px solid #555;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 3px 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.05em;
+}
+
+.count-btn:hover {
+  border-color: #fff;
+}
+
+.plus-icon {
+  color: #aaa;
+  font-size: 14px;
+}
+
+.result-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.action-btn {
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 9px 18px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 2px solid #fff;
+}
+
+.action-btn:hover {
+  opacity: 0.8;
+}
+
+.action-btn:active {
+  transform: translateY(1px);
+}
+
+.action-btn.primary {
+  background: #fff;
+  color: #000;
+}
+
+.action-btn.primary:hover {
+  background: #000;
+  color: #fff;
+  opacity: 1;
+}
+
+.action-btn.secondary {
+  background: #000;
+  color: #fff;
+}
+
+.action-btn.secondary:hover {
+  background: #fff;
+  color: #000;
+  opacity: 1;
+}
+
+/* ── Landing page ─────────────────────────────── */
+.landing {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.landing-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  text-align: center;
+}
+
+.landing-logo {
+  width: 52px;
+  height: 52px;
+  image-rendering: pixelated;
+}
+
+.landing-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.landing-desc {
+  font-size: 14px;
+  color: #fff;
+  line-height: 1.7;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+}
+
+.landing-btn {
+  margin-top: 8px;
+  background: #fff;
+  border: 2px solid #fff;
+  color: #000;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 12px 36px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.landing-btn:hover {
+  background: #000;
+  color: #fff;
+}
+
+/* ── Made by label ────────────────────────────── */
+.made-by {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 16px;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  color: #000;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+  z-index: 20;
+  text-decoration: none;
+  background: #fff;
+  padding: 9px 16px;
+}
+
+.made-by:hover {
+  background: #e0e0e0;
+}
+
+.made-by-wordmark {
+  height: 16px;
+  width: auto;
+  filter: invert(1);
+}
+
+/* ── Bulk input ───────────────────────────────── */
+.bulk-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bulk-input {
+  background: #000;
+  border: 1px solid #555;
+  color: #fff;
+  font-size: 13px;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 10px;
+  resize: none;
+  outline: none;
+  line-height: 1.6;
+}
+
+.bulk-input:focus {
+  border-color: #fff;
+}
+
+.bulk-input::placeholder {
+  color: #444;
+}
+
+.bulk-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.bulk-actions .add-btn,
+.bulk-actions .roll-btn {
+  flex: 1;
+}
+
+.panel-actions-row {
+  display: flex;
+  gap: 8px;
+}
+
+.panel-actions-row .add-btn {
+  flex: 1;
+}
+
+/* ── Add row (inline paste input) ────────────── */
+.choice-add-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.add-input {
+  color: #999 !important;
+  border-color: #555 !important;
+}
+
+.add-input:focus {
+  color: #fff !important;
+  border-color: #888 !important;
+}
+
+.add-plus-btn {
+  font-size: 18px !important;
+  font-weight: 400;
+  color: #ccc !important;
+  border-color: #555 !important;
+}
+
+.add-plus-btn:hover {
+  color: #fff !important;
+  border-color: #aaa !important;
+}
+
+.choices-count {
+  font-size: 12px;
+  font-weight: 400;
+  color: #666;
+  margin-left: 4px;
+}
+
+.list-divider {
+  height: 1px;
+  background: #333;
+  margin: 2px 0;
+}
+
+/* ── Rolling indicator ────────────────────────── */
+.rolling-indicator {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  animation: blink 1s step-start infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* ── Mobile ───────────────────────────────────── */
+@media (max-width: 640px) {
+  .choices-panel {
+    left: 0;
+    right: 0;
+    top: var(--mobile-top, 62vh);
+    bottom: 0;
+    transform: none;
+    width: 100%;
+    max-height: 90vh;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    padding: 16px 16px env(safe-area-inset-bottom, 24px);
+    gap: 12px;
+    overflow-y: auto;
+  }
+
+  .choices-list {
+    max-height: none;
+    overflow-y: visible;
+  }
+
+  .panel-header h2 {
+    font-size: 14px;
+  }
+
+  .result-card {
+    padding: 28px 24px;
+    min-width: unset;
+    width: calc(100vw - 48px);
+    max-width: 360px;
+  }
+
+  .result-label {
+    font-size: 32px;
+  }
+
+  .result-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .action-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .landing-content {
+    padding: 0 24px;
+  }
+
+  .landing-logo {
+    width: 40px;
+    height: 40px;
+  }
+
+  .landing-title {
+    font-size: 26px;
+  }
+
+  .landing-desc {
+    font-size: 12px;
+  }
+
+  .made-by {
+    bottom: 0;
+    left: 0;
+  }
+
+  .roll-btn {
+    padding: 14px;
+    font-size: 15px;
+  }
+}

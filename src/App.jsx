@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { DiceCanvas } from './components/DiceCanvas'
 import { LandingPage } from './components/LandingPage'
 import { ChoicesPanel } from './components/ChoicesPanel'
@@ -35,6 +35,7 @@ export default function App() {
   const [counts, setCounts] = useState({})
   const [diceReady, setDiceReady] = useState(false)
   const [muted, setMuted] = useState(false)
+  const diceAudioRef = useRef(null)
 
   const filledChoices = choices.filter(c => c.trim())
   const diceType = getDiceType(filledChoices.length)
@@ -42,15 +43,26 @@ export default function App() {
   const handleRoll = () => {
     setResult(null)
     setMode('rolling')
-    if (!muted) new Audio('/assets/dice-final.mp3').play().catch(() => {})
+    if (!muted) {
+      const audio = new Audio('/assets/dice-final.mp3')
+      diceAudioRef.current = audio
+      audio.play().catch(() => {})
+    }
   }
 
   const handleRollComplete = (value) => {
     if (value == null || mode !== 'rolling' || filledChoices.length === 0) return
+    if (diceAudioRef.current) {
+      diceAudioRef.current.pause()
+      diceAudioRef.current = null
+    }
     const idx = ((value - 1) % filledChoices.length + filledChoices.length) % filledChoices.length
-    setResult({ value, label: filledChoices[idx] })
-    setMode('result')
-    if (!muted) new Audio('/assets/result-final.mp3').play().catch(() => {})
+    const label = filledChoices[idx]
+    setTimeout(() => {
+      setResult({ value, label })
+      setMode('result')
+      if (!muted) new Audio('/assets/result-final.mp3').play().catch(() => {})
+    }, 700)
   }
 
   const handleIncrementCount = () => {

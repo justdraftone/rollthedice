@@ -6,7 +6,7 @@ const CONTAINER_ID = 'dice-canvas-container'
 export function DiceCanvas({ mode, diceType, onRollComplete, onReady, onDemoRoll }) {
   const { roll, ready } = useDiceBox(`#${CONTAINER_ID}`, onRollComplete)
 
-  // Show demo dice on ready
+  // Show demo dice on ready (landing page = 5 dice)
   useEffect(() => {
     onReady?.(ready)
     if (ready) roll(diceType, 5)
@@ -16,17 +16,20 @@ export function DiceCanvas({ mode, diceType, onRollComplete, onReady, onDemoRoll
   useEffect(() => {
     if (!ready) return
     if (mode === 'rolling' || mode === 'result') return
-    roll(diceType, 5)
+    roll(diceType, mode === 'landing' ? 5 : 1)
   }, [diceType])
 
-  // Actual roll
+  // Handle mode transitions
   useEffect(() => {
+    if (!ready) return
     if (mode === 'rolling') roll(diceType)
+    else if (mode === 'edit') roll(diceType, 1)
+    else if (mode === 'landing') roll(diceType, 5)
   }, [mode])
 
   const handleClick = () => {
     if (!ready || mode === 'rolling' || mode === 'result') return
-    roll(diceType, 5)
+    roll(diceType, mode === 'landing' ? 5 : 1)
     onDemoRoll?.()
   }
 

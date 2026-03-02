@@ -3,7 +3,7 @@ import { useDiceBox } from '../hooks/useDiceBox'
 
 const CONTAINER_ID = 'dice-canvas-container'
 
-export function DiceCanvas({ mode, diceType, onRollComplete, onReady }) {
+export function DiceCanvas({ mode, diceType, onRollComplete, onReady, onDemoRoll }) {
   const { roll, ready } = useDiceBox(`#${CONTAINER_ID}`, onRollComplete)
 
   // Show demo dice on ready
@@ -27,6 +27,7 @@ export function DiceCanvas({ mode, diceType, onRollComplete, onReady }) {
   const handleClick = () => {
     if (!ready || mode === 'rolling' || mode === 'result') return
     roll(diceType, 5)
+    onDemoRoll?.()
   }
 
   return (

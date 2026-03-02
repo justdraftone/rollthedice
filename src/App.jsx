@@ -78,6 +78,7 @@ export default function App() {
         diceType={diceType}
         onRollComplete={handleRollComplete}
         onReady={setDiceReady}
+        onDemoRoll={() => { if (!muted) new Audio('/assets/dice-final.mp3').play().catch(() => {}) }}
       />
 
       {mode === 'landing' && (

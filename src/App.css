@@ -647,6 +647,7 @@
   .made-by {
     bottom: 0;
     left: 0;
+    padding-left: 16px;
   }
 
   .roll-btn {

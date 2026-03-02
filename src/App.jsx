@@ -51,11 +51,11 @@ export default function App() {
   }
 
   const handleRollComplete = (value) => {
-    if (value == null || mode !== 'rolling' || filledChoices.length === 0) return
     if (diceAudioRef.current) {
       diceAudioRef.current.pause()
       diceAudioRef.current = null
     }
+    if (value == null || mode !== 'rolling' || filledChoices.length === 0) return
     const idx = ((value - 1) % filledChoices.length + filledChoices.length) % filledChoices.length
     const label = filledChoices[idx]
     setTimeout(() => {
@@ -78,7 +78,13 @@ export default function App() {
         diceType={diceType}
         onRollComplete={handleRollComplete}
         onReady={setDiceReady}
-        onDemoRoll={() => { if (!muted) new Audio('/assets/dice-final.mp3').play().catch(() => {}) }}
+        onDemoRoll={() => {
+          if (!muted) {
+            const audio = new Audio('/assets/dice-final.mp3')
+            diceAudioRef.current = audio
+            audio.play().catch(() => {})
+          }
+        }}
       />
 
       {mode === 'landing' && (

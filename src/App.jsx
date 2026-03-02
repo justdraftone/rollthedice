@@ -38,7 +38,7 @@ export default function App() {
   const diceAudioRef = useRef(null)
 
   const filledChoices = choices.filter(c => c.trim())
-  const diceType = getDiceType(filledChoices.length)
+  const diceType = getDiceType(choices.length)
 
   const handleRoll = () => {
     setResult(null)

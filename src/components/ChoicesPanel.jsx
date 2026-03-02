@@ -36,7 +36,7 @@ export function ChoicesPanel({ choices, setChoices, diceType, diceReady, onRoll 
 
   const addSingle = () => {
     const val = inputVal.trim()
-    if (!val || choices.length >= 20) return
+    if (choices.length >= 20) return
     setChoices([...choices, val])
     setInputVal('')
     inputRef.current?.focus()
@@ -54,7 +54,10 @@ export function ChoicesPanel({ choices, setChoices, diceType, diceReady, onRoll 
   }
 
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); addSingle() }
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      if (inputVal.trim()) addSingle()
+    }
   }
 
   // On mobile: start low (few choices) and rise as choices grow

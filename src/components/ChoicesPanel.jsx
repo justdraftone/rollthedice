@@ -42,17 +42,6 @@ export function ChoicesPanel({ choices, setChoices, diceType, diceReady, onRoll 
     inputRef.current?.focus()
   }
 
-  const handlePaste = (e) => {
-    const text = e.clipboardData.getData('text')
-    const lines = text.split('\n').map(l => l.trim()).filter(Boolean)
-    if (lines.length <= 1) return // single line — let default paste handle it
-    e.preventDefault()
-    const combined = [...choices.filter(c => c.trim()), ...lines].slice(0, 20)
-    while (combined.length < 2) combined.push('')
-    setChoices(combined)
-    setInputVal('')
-  }
-
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault()
@@ -81,9 +70,8 @@ export function ChoicesPanel({ choices, setChoices, diceType, diceReady, onRoll 
               type="text"
               value={inputVal}
               onChange={e => setInputVal(e.target.value)}
-              onPaste={handlePaste}
               onKeyDown={handleKeyDown}
-              placeholder="Type or paste multiple lines..."
+              placeholder="Add a choice..."
               className="choice-input add-input"
             />
             <button className="icon-btn add-plus-btn" onClick={addSingle} title="Add">+</button>

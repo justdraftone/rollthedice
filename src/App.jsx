@@ -110,7 +110,7 @@ export default function App() {
           result={result}
           counts={counts}
           onIncrementCount={handleIncrementCount}
-          onRollAgain={() => { setResult(null); setMode('rolling') }}
+          onRollAgain={handleRoll}
           onEdit={() => { setResult(null); setMode('edit') }}
         />
       )}
